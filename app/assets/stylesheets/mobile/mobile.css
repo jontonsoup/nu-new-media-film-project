@@ -4,13 +4,15 @@
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require_self
  *= require_tree .
-*/
+ */
 
-/*  this is a hack to get the signout button to position correctly... it should be removed eventually */
-#layouts-footer-signout-button {
-margin-right: 2%
-}
+ /*  this is a hack to get the signout button to position correctly... it should be removed eventually */
+ #layouts-footer-signout-button {
+ 	margin-right: 2%
+ }
 
-#layouts-footer {
-	bottom: 0;
-}
+ #layouts-footer {
+ 	bottom: 0;
+ }
+
+ .ui-page { -webkit-backface-visibility: hidden; }
