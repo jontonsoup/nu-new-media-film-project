@@ -42,24 +42,54 @@ class MessagesController < ApplicationController
     def create
         @message = Message.new(params[:message])
         respond_to do |format|
-            if @message.save
-                redirect_object = @message
-                if @message.conversation.conversation_object.class.name == "Invitation"
-                    @message.conversation.users.each do |user|
-                        if user != @message.user
-                            notification = Notification.create(user: user, notification_object: @message, notification_type: NotificationType.find_by_name("NewInvitationMessage"))
+            unless @message.conversation.nil?
+                if @message.save
+                    redirect_object = @message
+
+                    if @message.conversation.conversation_object.class.name == "Invitation"
+                        @message.conversation.users.each do |user|
+                            if user != @message.user
+                                notification = Notification.create(user: user, notification_object: @message, notification_type: NotificationType.find_by_name("NewInvitationMessage"))
+                            end
                         end
+                        redirect_object = @message.conversation.conversation_object
+
+
                     end
-                    redirect_object = @message.conversation.conversation_object
+
+                    format.html { redirect_to redirect_object, notice: 'Message was successfully sent.' }
+                    format.json { render json: @message, status: :created, location: @message }
+                else
+                    format.html { render action: "new" }
+                    format.json { render json: @message.errors, status: :unprocessable_entity }
                 end
-                format.html { redirect_to redirect_object, notice: 'Message was successfully sent.' }
-                format.json { render json: @message, status: :created, location: @message }
             else
-                format.html { render action: "new" }
-                format.json { render json: @message.errors, status: :unprocessable_entity }
-            end
-        end
-    end
+
+                unless not params[:conversation_id].nil?
+                    conversation = current_user.conversations.create
+                    @message.conversation_id = conversation
+                else
+                    conversation = Conversation.find_by_id(params[:conversation_id])
+                    @message.text = params[:text]
+                end
+                @message.user = current_user
+                conversation.messages << @message
+                conversation.users.each do |user|
+                notification = Notification.create(user: user, notification_object: @message, notification_type: NotificationType.find_by_name("Default"))
+             end
+             conversation.save
+             if @message.save
+                format.html { redirect_to conversation_url(conversation), notice: 'Message was successfully sent.' }
+                format.json { render json: @message, status: :created, location: @message }
+                format.mobile { redirect_to conversation_url(conversation), notice: 'Message was successfully sent.' }
+            else
+               format.html { render action: "new" }
+               format.json { render json: @message.errors, status: :unprocessable_entity }
+               format.mobile { render action: "new" }
+           end
+       end
+   end
+end
 
     # PUT /messages/1
     # PUT /messages/1.json

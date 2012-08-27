@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
     before_save :lowercase_name
     has_many :invitation_to_users
     has_many :invitations, :through => :invitation_to_users
+    has_and_belongs_to_many :conversations
 
     default_scope order('name ASC')
 

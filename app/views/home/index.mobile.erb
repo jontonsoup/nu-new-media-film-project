@@ -6,9 +6,10 @@
         </div>
     </div>
     <div class="grid_4">
-        <%= link_to image_tag("mobile/home/assets_small.png", :class => "menu-grid-icon"), assets_path %>
+        <br>
+        <%= link_to image_tag("mobile/home/envelope.png", :class => "menu-grid-icon"), conversations_path %>
         <div class="menu-grid-icon-text">
-            Assets
+            Chat
         </div>
     </div>
     <div class="grid_4">
@@ -49,6 +50,13 @@
         <%= link_to image_tag("mobile/home/notifications_small.png", :class => "menu-grid-icon"), notifications_path %>
         <div class="menu-grid-icon-text">
             Notifications
+        </div>
+    </div>
+    <div class="grid_4">
+
+        <%= link_to image_tag("mobile/home/assets_small.png", :class => "menu-grid-icon"), assets_path %>
+        <div class="menu-grid-icon-text">
+            Assets
         </div>
     </div>
 </fieldset>

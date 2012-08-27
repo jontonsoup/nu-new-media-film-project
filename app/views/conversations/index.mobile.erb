@@ -1,0 +1,29 @@
+	<%= link_to 'New Message', '/messages/new',  :"data-role" => "button"%>
+	<br>
+	<br>
+	<br>
+	<ul data-role="listview">
+
+		<% @conversations.each do |conversation|%>
+		<li>
+		<%= link_to conversation_url(conversation)  do %>
+				<% conversation.users.each do |user| %>
+				<%= user %>
+				<% end %>
+				<% con = conversation.messages.last %>
+				<% unless con.nil? %>
+				<%= con.text  %>
+				<% end %>
+				<p class = "ui-li-aside">
+
+
+					<% unless con.nil? %>
+					<%= con.created_at.strftime("at %m/%d/%Y %I:%M%p")  %>
+					<% end %>
+
+				</p>
+			<% end %>
+		</li>
+		<% end %>
+
+	</ul>

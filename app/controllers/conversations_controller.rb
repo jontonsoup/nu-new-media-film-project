@@ -2,7 +2,7 @@ class ConversationsController < ApplicationController
   # GET /conversations
   # GET /conversations.json
   def index
-    @conversations = Conversation.all
+    @conversations = Conversation.all.reverse
 
     respond_to do |format|
       format.html # index.html.erb
@@ -14,10 +14,11 @@ class ConversationsController < ApplicationController
   # GET /conversations/1.json
   def show
     @conversation = Conversation.find(params[:id])
-
+    @message = Message.new
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @conversation }
+      format.mobile
     end
   end
 
@@ -25,6 +26,8 @@ class ConversationsController < ApplicationController
   # GET /conversations/new.json
   def new
     @conversation = Conversation.new
+        @projects = self.current_user.projects.sort_by &:created_at
+        @current_user = self.current_user
 
     respond_to do |format|
       format.html # new.html.erb
