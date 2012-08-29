@@ -1,45 +1,58 @@
+	<script type="text/javascript">
+	//$('#layouts-page').bind('pageshow', function() {
+		setInterval(function(){
+			var count = <%= @count %>
+			$.ajax({ url: "<%= conversations_url %>/<%=   @conversation.id.to_s %>/count.json", success: function(data){
+				if (count < data){
+					location.reload(true);
+				}
+			}, dataType: "json"});
+		}, 4000);
+	//});
+	</script>
+
 	<div >
 		<%= form_tag(@message, :url => { :controller => "messages_controller",
-                                 :action => "create" }) do %>
-		<% if @message.errors.any? %>
-		<div id="error_explanation">
-			<h2><%= pluralize(@message.errors.count, "error") %> prohibited this message from being saved:</h2>
+			:action => "create" }) do %>
+			<% if @message.errors.any? %>
+			<div id="error_explanation">
+				<h2><%= pluralize(@message.errors.count, "error") %> prohibited this message from being saved:</h2>
 
-			<ul>
-				<% @message.errors.full_messages.each do |msg| %>
-				<li><%= msg %></li>
+				<ul>
+					<% @message.errors.full_messages.each do |msg| %>
+					<li><%= msg %></li>
+					<% end %>
+				</ul>
+			</div>
+			<% end %>
+
+			<div class="field">
+				<%= text_area_tag :text %>
+			</div>
+			<%= hidden_field_tag :conversation_id, @conversation.id %>
+			<div class="actions">
+				<%= submit_tag "Send Message"%>
+			</div>
+
+			<% end %>
+		</div>
+		<br>
+		<br>
+		<ul data-role="listview">
+			<% @conversation.messages.each do |message|%>
+			<% if message.user == current_user %>
+			<li data-theme="a">
+				<% else %>
+				<li>
+					<% end %>
+
+					<%= message.text %>
+					<p class = "ui-li-aside">
+						<%= message.user %>
+						<%= message.created_at.strftime("at %m/%d/%Y %I:%M%p")  %>
+
+					</p>
+				</li>
 				<% end %>
 			</ul>
-		</div>
-		<% end %>
-
-		<div class="field">
-			<%= text_area_tag :text %>
-		</div>
-		<%= hidden_field_tag :conversation_id, @conversation.id %>
-		<div class="actions">
-			<%= submit_tag "Send Message"%>
-		</div>
-
-		<% end %>
-	</div>
-	<br>
-	<br>
-	<ul data-role="listview">
-		<% @conversation.messages.each do |message|%>
-		<% if message.user == current_user %>
-		<li data-theme="a">
-			<% else %>
-			<li>
-				<% end %>
-
-				<%= message.text %>
-				<p class = "ui-li-aside">
-					<%= message.user %>
-					<%= message.created_at.strftime("at %m/%d/%Y %I:%M%p")  %>
-
-				</p>
-			</li>
-			<% end %>
-		</ul>
-		<br><br>
+			<br><br>

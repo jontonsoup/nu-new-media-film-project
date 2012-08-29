@@ -15,6 +15,7 @@ class ConversationsController < ApplicationController
   def show
     @conversation = Conversation.find(params[:id])
     @message = Message.new
+    @count = @conversation.messages.size
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @conversation }
@@ -26,8 +27,8 @@ class ConversationsController < ApplicationController
   # GET /conversations/new.json
   def new
     @conversation = Conversation.new
-        @projects = self.current_user.projects.sort_by &:created_at
-        @current_user = self.current_user
+    @projects = self.current_user.projects.sort_by &:created_at
+    @current_user = self.current_user
 
     respond_to do |format|
       format.html # new.html.erb
@@ -38,6 +39,11 @@ class ConversationsController < ApplicationController
   # GET /conversations/1/edit
   def edit
     @conversation = Conversation.find(params[:id])
+  end
+
+  def count
+    @conversation = Conversation.find(params[:id])
+    render json: @conversation.messages.size
   end
 
   # POST /conversations

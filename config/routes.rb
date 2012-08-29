@@ -17,8 +17,8 @@ FilmProjectRails::Application.routes.draw do
   get "home/index"
   resources :task_categories
 
-  resources :reminders
-
+  resources :reminder
+  match '/conversations/:id/count', :to => 'conversations#count'
   match '/assets', :to => 'assets#index', :via => :get
   match '/assets/upload', :to => 'assets#new', :via => :get
   match '/assets', :to => 'assets#create', :via => :post
@@ -80,7 +80,7 @@ FilmProjectRails::Application.routes.draw do
   #...
   #  # You can have the root of your site routed with "root"
   #    # just remember to delete public/index.html.
-        root :to => "home#index"
+  root :to => "home#index"
 end
   # The priority is based upon order of creation:
   # first created -> highest priority.
