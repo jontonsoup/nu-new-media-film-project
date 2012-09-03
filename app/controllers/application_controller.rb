@@ -36,6 +36,13 @@ class ApplicationController < ActionController::Base
         end
     end
 
+    after_filter :ensure_project
+    def ensure_project
+        if is_mobile_device? and current_project.nil?
+             flash[:notice] = "You are not in a project!"
+        end
+    end
+
     protected
     def current_user
         @current_user ||= User.find_by_id(session[:user_id])

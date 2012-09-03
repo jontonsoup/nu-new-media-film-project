@@ -1,34 +1,36 @@
 <%= form_for(@message) do |f| %>
-  <% if @message.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@message.errors.count, "error") %> prohibited this message from being saved:</h2>
+<% if @message.errors.any? %>
+<div id="error_explanation">
+  <h2><%= pluralize(@message.errors.count, "error") %> prohibited this message from being saved:</h2>
 
-      <ul>
-      <% @message.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <ul>
+    <% @message.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
 
-    <!-- Assignees -->
-      <li data-role="fieldcontain">
-        <div data-role="collapsible" id="task-new-assignees-collapsible">
-          <h3>To:</h3>
-          <fieldset="controlgroup">
-            <% for user in current_project.users %>
-                <%= check_box_tag "message[user_id][]", user.id, false, :id => "task-new-assignee-#{user.id}" %>
+<!-- Assignees -->
+<li data-role="fieldcontain">
+  <div data-role="collapsible" id="task-new-assignees-collapsible">
+    <h3>To:</h3>
+    <fieldset="controlgroup">
+    <% for user in current_project.users %>
+    <% unless user.id == current_user.id %>
+    <%= check_box_tag "message[user_id][]", user.id, false, :id => "task-new-assignee-#{user.id}" %>
 
-                <label for="task-new-assignee-<%= user.id %>"><%= user.name %></label>
-            <% end %>
-          </fieldset>
-        </div>
-      </li>
+    <label for="task-new-assignee-<%= user.id %>"><%= user.name %></label>
+    <% end %>
+    <% end %>
+  </fieldset>
+</div>
+</li>
 
-  <div class="field">
-    <%= f.text_area :text %>
-  </div>
-  <div class="actions">
-    <%= f.submit "Send Message"%>
-  </div>
+<div class="field">
+  <%= f.text_area :text %>
+</div>
+<div class="actions">
+  <%= f.submit "Send Message"%>
+</div>
 <% end %>

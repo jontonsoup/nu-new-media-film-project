@@ -41,6 +41,7 @@ class MessagesController < ApplicationController
     # POST /messages.json
     def create
         @message = Message.new(params[:message])
+        debugger
         respond_to do |format|
             unless @message.conversation.nil?
                 if @message.save
@@ -76,9 +77,14 @@ class MessagesController < ApplicationController
                 end
                 @message.user = current_user
                 conversation.messages << @message
+
+                params[:message][:user_id].each do |id|
+                    user = User.find_by_id(id)
+                    conversation.users << user
+                end
                 conversation.users.each do |user|
-                notification = Notification.create(user: user, notification_object: @message, notification_type: NotificationType.find_by_name("Default"))
-             end
+                    notification = Notification.create(user: user, notification_object: @message, notification_type: NotificationType.find_by_name("Default"))
+                end
              conversation.save
              if @message.save
                 format.html { redirect_to conversation_url(conversation), notice: 'Message was successfully sent.' }
