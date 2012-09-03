@@ -67,6 +67,8 @@ class MessagesController < ApplicationController
 
                 unless not params[:conversation_id].nil?
                     conversation = current_user.conversations.create
+                    current_project.conversations << conversation
+                    current_project.save
                     @message.conversation_id = conversation
                 else
                     conversation = Conversation.find_by_id(params[:conversation_id])
