@@ -41,7 +41,6 @@ class MessagesController < ApplicationController
     # POST /messages.json
     def create
         @message = Message.new(params[:message])
-        debugger
         respond_to do |format|
             unless @message.conversation.nil?
                 if @message.save
