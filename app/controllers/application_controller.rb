@@ -36,6 +36,7 @@ class ApplicationController < ActionController::Base
         end
     end
 
+    after_filter :ensure_project
     def ensure_project
         if is_mobile_device? and current_project.nil?
              flash[:notice] = "You are not in a project!"

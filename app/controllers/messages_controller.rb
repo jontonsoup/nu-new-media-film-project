@@ -70,13 +70,14 @@ class MessagesController < ApplicationController
                     current_project.conversations << conversation
                     current_project.save
                     @message.conversation_id = conversation
+                    params[:message][:user_id].each do |id|
+                        user = User.find_by_id(id)
+                        conversation.users << user
+                    end
                 else
                     conversation = Conversation.find_by_id(params[:conversation_id])
                     @message.text = params[:text]
-                    params[:message][:user_id].each do |id|
-                        user = User.find_by_id(id)
-                    conversation.users << user
-                end
+
                 end
                 @message.user = current_user
                 conversation.messages << @message
@@ -85,19 +86,19 @@ class MessagesController < ApplicationController
                 conversation.users.each do |user|
                     notification = Notification.create(user: user, notification_object: @message, notification_type: NotificationType.find_by_name("Default"))
                 end
-             conversation.save
-             if @message.save
-                format.html { redirect_to conversation_url(conversation), notice: 'Message was successfully sent.' }
-                format.json { render json: @message, status: :created, location: @message }
-                format.mobile { redirect_to conversation_url(conversation), notice: 'Message was successfully sent.' }
-            else
-               format.html { render action: "new" }
-               format.json { render json: @message.errors, status: :unprocessable_entity }
-               format.mobile { render action: "new" }
-           end
-       end
-   end
-end
+                conversation.save
+                if @message.save
+                    format.html { redirect_to conversation_url(conversation), notice: 'Message was successfully sent.' }
+                    format.json { render json: @message, status: :created, location: @message }
+                    format.mobile { redirect_to conversation_url(conversation), notice: 'Message was successfully sent.' }
+                else
+                 format.html { render action: "new" }
+                 format.json { render json: @message.errors, status: :unprocessable_entity }
+                 format.mobile { render action: "new" }
+             end
+         end
+     end
+ end
 
     # PUT /messages/1
     # PUT /messages/1.json
