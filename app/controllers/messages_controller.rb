@@ -74,14 +74,15 @@ class MessagesController < ApplicationController
                 else
                     conversation = Conversation.find_by_id(params[:conversation_id])
                     @message.text = params[:text]
+                    params[:message][:user_id].each do |id|
+                        user = User.find_by_id(id)
+                    conversation.users << user
+                end
                 end
                 @message.user = current_user
                 conversation.messages << @message
 
-                params[:message][:user_id].each do |id|
-                    user = User.find_by_id(id)
-                    conversation.users << user
-                end
+
                 conversation.users.each do |user|
                     notification = Notification.create(user: user, notification_object: @message, notification_type: NotificationType.find_by_name("Default"))
                 end
