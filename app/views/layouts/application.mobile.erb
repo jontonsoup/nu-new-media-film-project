@@ -14,8 +14,8 @@
 
 </head>
 <body>
-
-  <div data-role="page" id="layouts-page">
+  <% url = request.path%>
+  <div data-role="page" id="layouts-page" data-url="<%= url %>">
     <% if current_user? %>
     <!-- start container -->
     <div data-role="header" data-position="fixed">

@@ -1,14 +1,15 @@
 	<script type="text/javascript">
-	//$('#layouts-page').bind('pageshow', function() {
-		setInterval(function(){
-			var count = <%= @count %>
-			$.ajax({ url: "<%= conversations_url %>/<%=   @conversation.id.to_s %>/count.json", success: function(data){
-				if (count < data){
-					location.reload(true);
-				}
-			}, dataType: "json"});
-		}, 4000);
-	//});
+	var count = <%= @count %>
+	setInterval(function(){
+		$.ajax({ url: "<%= conversations_url %>/<%=   @conversation.id.to_s %>/count.json", success: function(data){
+			if (count < data){
+				$('#conversations').load('<%= conversations_url %>/<%= @conversation.id.to_s %>/ajax', function() {
+					$('#messages_id').listview();
+					count = data;
+				});
+			}
+		}, dataType: "json"});
+	}, 4000);
 	</script>
 
 	<div >
@@ -24,7 +25,7 @@
 					<% end %>
 				</ul>
 			</div>
-			<% end %>
+			$('#messages_id').listview('refresh');		<% end %>
 
 			<div class="field">
 				<%= text_area_tag :text %>
@@ -38,21 +39,23 @@
 		</div>
 		<br>
 		<br>
-		<ul data-role="listview">
-			<% @conversation.messages.each do |message|%>
-			<% if message.user == current_user %>
-			<li data-theme="a">
-				<% else %>
-				<li>
+		<div id ="conversations">
+			<ul data-role="listview" id="messages_id">
+				<% @conversation.messages.reverse.each do |message|%>
+				<% if message.user == current_user %>
+				<li data-theme="a">
+					<% else %>
+					<li>
+						<% end %>
+
+						<%= message.text %>
+						<p class = "ui-li-aside">
+							<%= message.user %>
+							<%= message.created_at.strftime("at %m/%d/%Y %I:%M%p")  %>
+
+						</p>
+					</li>
 					<% end %>
-
-					<%= message.text %>
-					<p class = "ui-li-aside">
-						<%= message.user %>
-						<%= message.created_at.strftime("at %m/%d/%Y %I:%M%p")  %>
-
-					</p>
-				</li>
-				<% end %>
-			</ul>
+				</ul>
+			</div>
 			<br><br>

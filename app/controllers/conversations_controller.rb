@@ -46,6 +46,13 @@ class ConversationsController < ApplicationController
     render json: @conversation.messages.size
   end
 
+  def ajax_messages
+    @conversation = Conversation.find(params[:id])
+    @message = Message.new
+    @count = @conversation.messages.size
+    render :partial => 'messages', :layout => 'layouts/partial'
+  end
+
   # POST /conversations
   # POST /conversations.json
   def create

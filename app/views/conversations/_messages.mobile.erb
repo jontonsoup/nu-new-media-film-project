@@ -1,0 +1,17 @@
+		<ul data-role="listview" id="messages_id">
+			<% @conversation.messages.reverse.each do |message|%>
+			<% if message.user == current_user %>
+			<li data-theme="a">
+				<% else %>
+				<li>
+					<% end %>
+
+					<%= message.text %>
+					<p class = "ui-li-aside">
+						<%= message.user %>
+						<%= message.created_at.strftime("at %m/%d/%Y %I:%M%p")  %>
+
+					</p>
+				</li>
+				<% end %>
+			</ul>

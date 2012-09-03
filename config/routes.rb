@@ -19,6 +19,7 @@ FilmProjectRails::Application.routes.draw do
 
   resources :reminder
   match '/conversations/:id/count', :to => 'conversations#count'
+    match '/conversations/:id/ajax', :to => 'conversations#ajax_messages'
   match '/assets', :to => 'assets#index', :via => :get
   match '/assets/upload', :to => 'assets#new', :via => :get
   match '/assets', :to => 'assets#create', :via => :post
